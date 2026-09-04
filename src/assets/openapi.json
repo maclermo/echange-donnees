@@ -1,0 +1,525 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Aviron REST API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/aviron/api/entreprises": {
+      "get": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "getEntreprises",
+        "summary": "Lister les entreprises",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeEntreprises"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/aviron/api/factures": {
+      "get": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "getFactures",
+        "summary": "Lister les factures",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeFactures"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "createFacture",
+        "summary": "Créer une facture",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FactureRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/aviron/api/factures/{id}": {
+      "get": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "getFacture",
+        "summary": "Obtenir une facture",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Identifiant unique de la facture"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Facture"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "deleteFacture",
+        "summary": "Supprimer une facture",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Identifiant unique de la facture"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/aviron/api/factures/{id}/traiter": {
+      "post": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "traiterFacture",
+        "summary": "Traiter une facture",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Identifiant unique de la facture"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/aviron/api/factures/traiter": {
+      "post": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "operationId": "traiterFactures",
+        "summary": "Traiter toutes les factures",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Entreprise": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "client": {
+            "type": "string"
+          },
+          "courriel": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "adresse": {
+            "type": "string"
+          },
+          "code_postal": {
+            "type": "string"
+          },
+          "ville": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "pays": {
+            "type": "string"
+          }
+        }
+      },
+      "ListeEntreprises": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Entreprise"
+        }
+      },
+      "Facture": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "number"
+          },
+          "details": {
+            "type": "string"
+          },
+          "date_echeance": {
+            "type": "number"
+          },
+          "date_emission": {
+            "type": "number"
+          },
+          "date_traitement": {
+            "type": "number"
+          },
+          "entreprise": {
+            "$ref": "#/components/schemas/Entreprise"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "nom": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "quantite": {
+                  "type": "number"
+                },
+                "prix": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListeFactures": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Facture"
+        }
+      },
+      "FactureRequest": {
+        "type": "object",
+        "required": [
+          "entreprise_id",
+          "items"
+        ],
+        "properties": {
+          "details": {
+            "type": "string"
+          },
+          "date_echeance": {
+            "type": "number"
+          },
+          "entreprise_id": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "minItems": 1,
+              "type": "object",
+              "required": [
+                "nom",
+                "quantite",
+                "prix"
+              ],
+              "properties": {
+                "nom": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "quantite": {
+                  "type": "number"
+                },
+                "prix": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BasicError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ]
+}

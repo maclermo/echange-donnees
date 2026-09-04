@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <title>Odoo - Factures Aviron</title>
+</head>
+
+<body class="font-[Fira_Sans]">
+  <div id="main" class="pl-20 pr-20">
+    <div class="text-4xl pt-10 pb-10">
+      Odoo - Factures Aviron
+    </div>
+    <table id="table-factures" class="table table-zebra">
+      <thead>
+        <tr>
+          <th>Numéro</th>
+          <th>Nom Entreprise</th>
+          <th>Nom Client</th>
+          <th>Prix Total</th>
+          <th>Date D'émission</th>
+          <th>Date Traitement</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="loader">
+          <td colspan="7" class="text-center">
+            <span class="loading loading-spinner loading-xl"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div id="pagination" class="flex justify-end pt-10 hidden">
+      <div class="join">
+        <button class="join-item btn btn-md btn-active">1</button>
+      </div>
+      <div class="ml-5">
+        <button class="btn btn-md" onclick="traiterFactures()">Tout Traiter</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast-error" class="toast toast-top toast-end hidden">
+    <div class="alert alert-error">
+      <span id="error-message"></span>
+    </div>
+  </div>
+  <div id="toast-success" class="toast toast-top toast-end hidden">
+    <div class="alert alert-success">
+      <span>Factures traitées</span>
+    </div>
+  </div>
+  <div id="modals"></div>
+  <script>
+    const showError = (message) => {
+      const toast = document.querySelector("#toast-error");
+      const errorMessage = document.querySelector("#error-message");
+
+      errorMessage.textContent = message;
+      toast.classList.remove("hidden");
+
+      setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 3000);
+    };
+
+    const showSuccess = () => {
+      const toast = document.querySelector("#toast-success");
+
+      toast.classList.remove("hidden");
+
+      setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 3000);
+    };
+
+    const formatCodePostal = (codePostal) => {
+      const u = codePostal.toUpperCase().trim();
+
+      return [u.slice(0, 3), " ", u.slice(3)].join('');
+    };
+
+    const traiterFacture = async (factureID) => {
+      try {
+        const response = await fetch(`http://localhost:8080/aviron/api/factures/${factureID}/traiter`, {
+          method: "POST",
+          headers: {
+            Authorization: "Basic b2Rvby13cml0ZXI6bXktc3VwZXItcGFzc3dvcmQ=",
+          },
+        });
+
+        if (response.status !== 204) {
+          showError(`Erreur: ${response.status} - ${response.statusText}`);
+        }
+      } catch (error) {
+        showError(`Erreur: ${error instanceof Error ? error.message : String(error)}`);
+      }
+
+      await loadData();
+    };
+
+    const consulterFacture = (factureID) => {
+      document.querySelector(`#modal-${factureID}`)?.showModal();
+    };
+
+    const traiterFactures = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/aviron/api/factures/traiter", {
+          method: "POST",
+          headers: {
+            Authorization: "Basic b2Rvby13cml0ZXI6bXktc3VwZXItcGFzc3dvcmQ=",
+          },
+        });
+
+        if (response.status !== 204) {
+          showError(`Erreur: ${response.status} - ${response.statusText}`);
+        } else {
+          showSuccess();
+        }
+      } catch (error) {
+        showError(`Erreur: ${error instanceof Error ? error.message : String(error)}`);
+      }
+
+      await loadData();
+    };
+
+    const factureNoNormalize = (factureNo, len = 6) => {
+      const numero = Number(factureNo).toString();
+
+      if (numero.length >= len) {
+        return `F${numero}`;
+      }
+
+      let arr = Array(len - numero.length);
+      arr.fill("0");
+
+      return `F${arr.join("")}${numero}`;
+    };
+
+    const calculerPrix = (items) => {
+      let total = 0.0;
+
+      for (const item of items) {
+        total += item.quantite * item.prix;
+      }
+
+      const tps = 0.05;
+      const tvq = 0.09975;
+
+      return {
+        tps: (tps * total).toFixed(2),
+        tvq: (tvq * total).toFixed(2),
+        total: (total + (tps * total) + (tvq * total)).toFixed(2),
+      };
+    };
+
+    const loadData = async () => {
+      const itemsPerPage = 10;
+
+      let currentPage = 1;
+      let factures = [];
+
+      fetchData = async () => {
+        try {
+          const response = await fetch("http://localhost:8080/aviron/api/factures", {
+            method: "GET",
+            headers: {
+              Authorization: "Basic b2Rvby13cml0ZXI6bXktc3VwZXItcGFzc3dvcmQ=",
+            },
+          });
+
+          if (response.status !== 200) {
+            showError(`Erreur: ${response.status} - ${response.statusText}`);
+            return;
+          }
+
+          factures = await response.json();
+        } catch (error) {
+          showError(`Erreur: ${error instanceof Error ? error.message : String(error)}`);
+        } finally {
+          try {
+            document.querySelector("#loader").style.display = "none";
+          } catch {
+            // Ne pas afficher d'erreur s'il s'agit d'un rafraichissement.
+          }
+        }
+      };
+
+      renderTable = () => {
+        const tableBody = document.querySelector("#table-factures tbody");
+        tableBody.innerHTML = "";
+
+        const modals = document.querySelector("#modals");
+        modals.innerHTML = "";
+
+        if (factures.length === 0) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = '<td colspan="7" class="text-center">Aucune facture disponible.</td>';
+          tableBody.appendChild(tr);
+          return;
+        }
+
+        for (const facture of factures) {
+          const dateEmission = new Date(facture.date_emission).toLocaleString(Intl.Locale);
+          const dateTraitement = facture.date_traitement ? new Date(facture.date_traitement).toLocaleString(Intl.Locale) : "❌ Non traitée";
+          const dateEcheance = facture.date_echeance ? new Date(facture.date_echeance).toLocaleString(Intl.Locale) : "Aucune";
+          const prix = calculerPrix(facture.items);
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><b>${factureNoNormalize(facture.numero)}</b></td>
+            <td>${facture.entreprise.nom}</td>
+            <td>${facture.entreprise.client}</td>
+            <td>${prix.total} $</td>
+            <td>${dateEmission}</td>
+            <td>${dateTraitement}</td>
+            <td><button class="btn" onclick="consulterFacture('${facture.numero}')">Afficher</button></td>
+          `;
+          tableBody.appendChild(tr);
+
+          const modal = document.createElement("div");
+          modal.innerHTML = `
+            <dialog id="modal-${facture.numero}" class="modal">
+              <div class="modal-box max-w-none w-250">
+                <div class="flex justify-between">
+                  <div>
+                    <p class="text-2xl"><b>${facture.entreprise.nom}</b></p>
+                    <p class="text-md pt-2">${facture.entreprise.adresse}</p>
+                    <p class="text-md"> ${facture.entreprise.ville}, ${facture.entreprise.province}</p>
+                    <p class="text-md">${formatCodePostal(facture.entreprise.code_postal)}, ${facture.entreprise.pays}</p>
+                  </div>
+                  <div class="text-center">
+                    <b>${facture.date_traitement ? '<span class="text-green-400">TRAITÉE</span>' : '<span class="text-red-400">NON-TRAITÉE</span>'}</b>
+                  </div>
+                  <div>
+                    <p class="text-md"><b>Facture # ${factureNoNormalize(facture.numero)}</b></p>
+                    <p class="text-md pt-2">Date d'émission</p>
+                    <p class="text-md">${dateEmission}</p>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="flex justify-between">
+                  <div>
+                    <p class="text-md"><b>Envoyer la facture à</b></p>
+                    <p class="text-md pt-2">${facture.entreprise.client}</p>
+                    <p class="text-md">${facture.entreprise.courriel}</p>
+                    <p class="text-md">${facture.entreprise.telephone}</p>
+                  </div>
+                  <div>
+                    <p class="text-md"><b>Details</b></p>
+                    <p class="text-md pt-3">${facture.details ?? "(vide)"}</p>  
+                  </div>
+                  <div>
+                    <p class="text-md"><b>Paiement</b></p>
+                    <p class="text-md pt-2">Date d'échéance</p>
+                    <p class="text-md">${dateEcheance}</p>
+                  </div>
+                </div>
+                <div class="overflow-x-auto mt-10">
+                  <table class="table" id="items-${facture.numero}">
+                    <thead>
+                      <tr>
+                        <th class="w-1/15"></th>
+                        <th class="w-9/15">Item</th>
+                        <th class="w-1/15">Qtée</th>
+                        <th class="w-2/15">Prix</th>
+                        <th class="w-2/15">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-action">
+                  <button id="traiter-facture-${facture.numero}" class="btn" onclick="traiterFacture('${facture.numero}')">Traiter</button>
+                  <form method="dialog">
+                    <button class="btn">Fermer</button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
+          `;
+          modals.appendChild(modal);
+          const itemsTableBody = document.querySelector(`#items-${facture.numero} tbody`);
+
+          let index = 1;
+
+          for (const item of facture.items.sort((a, b) => a.id - b.id)) {
+            const lineSum = item.quantite * item.prix;
+            const itemsTr = document.createElement("tr");
+            itemsTr.innerHTML = `
+              <td>${index}</td>
+              <td><b>Nom: ${item.nom}</b><br/>Description: ${(item.description) ?? "(vide)"}</td>
+              <td>${item.quantite}</td>
+              <td>${item.prix.toFixed(2)} $</td>
+              <td>${lineSum.toFixed(2)} $</td>
+            `;
+            itemsTableBody.appendChild(itemsTr);
+            index++;
+          }
+
+          const tpsTr = document.createElement("tr");
+          tpsTr.innerHTML = `
+            <td colspan="3"></td>
+            <td colspan="1" class="text-right">TPS:</td>
+            <td colspan="1">${prix.tps} $</td>
+          `;
+          itemsTableBody.appendChild(tpsTr);
+
+          const tvqTr = document.createElement("tr");
+          tvqTr.innerHTML = `
+            <td colspan="3"></td>
+            <td colspan="1" class="text-right">TVQ:</td>
+            <td colspan="1">${prix.tvq} $</td>
+          `;
+          itemsTableBody.appendChild(tvqTr);
+
+          const totalTr = document.createElement("tr");
+          totalTr.innerHTML = `
+            <td colspan="3"></td>
+            <td colspan="1" class="text-right"><b>Total:<b></td>
+            <td colspan="1"><b>${prix.total} $</b></td>
+          `;
+          itemsTableBody.appendChild(totalTr);
+        }
+      };
+
+      updatePagination = () => {
+        document.querySelector("#pagination").classList.remove("hidden");
+
+        const paginationContainer = document.querySelector("#pagination .join");
+        paginationContainer.innerHTML = "";
+
+        const totalPages = Math.ceil(factures.length / itemsPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+          const button = document.createElement("button");
+          button.className = "join-item btn btn-md " + (i === currentPage ? "btn-active" : "");
+          button.textContent = i;
+          button.addEventListener("click", () => {
+            currentPage = i;
+            renderTable();
+            updatePagination();
+          });
+          paginationContainer.appendChild(button);
+        }
+
+        if (!totalPages) {
+          document.querySelector("#pagination").classList.add("hidden");
+        }
+      };
+
+      await fetchData();
+      renderTable();
+      updatePagination();
+    };
+
+    document.addEventListener("DOMContentLoaded", async () => await loadData())
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</body>
+
+</html>
