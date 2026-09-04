@@ -1,0 +1,75 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="vZ-ejJT3wTj1ZygO7gK4">
+    <mxGraphModel dx="808" dy="481" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="210" width="290" x="460" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="210" width="290" x="70" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Aviron" vertex="1">
+          <mxGeometry height="30" width="290" x="70" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-5" parent="1" style="points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;fillColor=#FF6A00;strokeColor=none;shape=mxgraph.alibaba_cloud.nodejs_performance_platform;" value="" vertex="1">
+          <mxGeometry height="60" width="53.16" x="188.42000000000002" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="UI" vertex="1">
+          <mxGeometry height="30" width="110" x="90" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="API" vertex="1">
+          <mxGeometry height="30" width="120" x="220" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-29" edge="1" parent="1" source="Ydyy1t8AJJ4zNyXcPlcw-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="Ydyy1t8AJJ4zNyXcPlcw-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Odoo" vertex="1">
+          <mxGeometry height="30" width="290" x="460" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-11" parent="1" style="points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;fillColor=#FF6A00;strokeColor=none;shape=mxgraph.alibaba_cloud.nodejs_performance_platform;" value="" vertex="1">
+          <mxGeometry height="60" width="53.16" x="578.42" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="UI" vertex="1">
+          <mxGeometry height="30" width="110" x="480" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-26" edge="1" parent="1" source="Ydyy1t8AJJ4zNyXcPlcw-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Ydyy1t8AJJ4zNyXcPlcw-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="145.03" y="60.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-24" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Utilisateur Aviron" vertex="1">
+          <mxGeometry height="60" width="30" x="200" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-27" edge="1" parent="1" source="Ydyy1t8AJJ4zNyXcPlcw-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Ydyy1t8AJJ4zNyXcPlcw-12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="535.03" y="60.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-25" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Utilisateur Odoo" vertex="1">
+          <mxGeometry height="60" width="30" x="585" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-28" edge="1" parent="1" source="Ydyy1t8AJJ4zNyXcPlcw-5" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=-0.014;entryY=0.266;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.949;exitY=0.819;exitDx=0;exitDy=0;exitPerimeter=0;" target="Ydyy1t8AJJ4zNyXcPlcw-4" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="340" y="230" as="sourcePoint" />
+            <mxPoint x="390" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-32" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="50" width="60" x="290" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-4" parent="Ydyy1t8AJJ4zNyXcPlcw-32" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" value="" vertex="1">
+          <mxGeometry height="50" width="40" x="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Ydyy1t8AJJ4zNyXcPlcw-30" parent="Ydyy1t8AJJ4zNyXcPlcw-32" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="pg" vertex="1">
+          <mxGeometry height="30" width="60" y="15" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
